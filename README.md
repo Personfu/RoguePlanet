@@ -1,16 +1,71 @@
 # RoguePlanet
-RoguePlanet Windows Defender Vulnerability
 
-Welcome back everyone !!!
+> Defensive research brief and lab notes for a Windows Defender race-condition vulnerability study.
 
-The exploit is a race condition, so it's a hit or miss. I have managed to get a 100% success rate on some machines while it struggled to work on others.
+## Status
 
-The exploit has been tested in Windows 11 (Official channel + Canary) and Windows 10 with june 2026 patch installed. The PoC however does not work in Windows Server since standard users cannot mount an ISO image, I'm confident that all Windows Server versions are vulnerable as well but by the time I figured out it that the PoC doesn't work in Windows Server installations, it was a too late to redesign the exploit to overcome this issue. But I want to make one thing very clear. All Windows Server installations are vulnerable as well, you just need to redesign the exploit.
+This repository is maintained as a **defensive vulnerability research artifact**. It is not a public exploitation product, dropper, privilege-escalation kit, or operational tool. Any proof-of-concept material in this repository is intended only for controlled lab validation, patch-awareness education, and responsible remediation planning.
 
-The race condition part is a bit interesting, I believe (but not sure) that a redesign of the PoC can make it achieve a 100% success rate regardless of the conditions but honestly I'm done with this bug.
+## Purpose
 
+RoguePlanet documents a race-condition class of issue affecting Windows Defender workflows. The professional value of this repository is not the exploitability claim — it is the defensive process:
 
+- identify the affected workflow;
+- reproduce safely in an isolated lab;
+- collect evidence without targeting third-party systems;
+- document affected versions and constraints;
+- build a patch-validation checklist;
+- turn findings into detection and hardening guidance.
 
-If the exploit succeeds, a SYSTEM shell will be spawned
+## Public safety boundary
 
-<img width="2350" height="1226" alt="RoguePlanet" src="https://github.com/user-attachments/assets/2d50fadd-ceb2-4289-a432-cc05fbb4eb40" />
+Do **not** use this repository against systems you do not own or administer. Do **not** treat this project as a weaponized tool. If you are validating exposure, use an isolated VM snapshot, do not connect the test host to production networks, and record only the minimum evidence needed for remediation.
+
+## Defensive validation workflow
+
+1. Create a disposable Windows VM snapshot.
+2. Record OS build, Defender engine/platform versions, update channel, and patch date.
+3. Run only lab-safe validation steps.
+4. Capture Defender event logs and relevant timestamps.
+5. Revert the VM snapshot after validation.
+6. Apply updates and repeat validation to confirm remediation.
+7. Document the result as `affected`, `not affected`, `inconclusive`, or `not tested`.
+
+## Recommended report fields
+
+```text
+Host type: Lab VM / owned endpoint / authorized test scope
+Windows build:
+Defender platform version:
+Defender engine version:
+Security intelligence version:
+Patch date:
+Validation date:
+Result: affected / not affected / inconclusive / not tested
+Evidence collected:
+Remediation action:
+Retest result:
+```
+
+## Detection and hardening ideas
+
+- Monitor Defender platform and engine version drift.
+- Track failed or suspicious archive/mount operations in endpoint logs.
+- Alert on unexpected privileged process creation after removable media or image-mount events.
+- Enforce least privilege for local users.
+- Keep Defender platform, engine, and intelligence updates current.
+- Prefer controlled enterprise update rings with validation snapshots.
+
+## FLLC positioning
+
+This repo belongs in the FLLC portfolio as a **vulnerability research and patch-validation note**, not as an offensive showcase. The public story should be:
+
+> We study vulnerability classes, validate defensive impact in controlled labs, and translate findings into remediation workflows.
+
+## Responsible use
+
+If you believe a vulnerability is unpatched or actively exploitable, follow coordinated disclosure practices and notify the appropriate vendor/security response channel. Do not publish working exploit chains or operational bypass instructions.
+
+## License
+
+See repository license files if present. If no explicit license is present, treat all content as all rights reserved until clarified.
